@@ -114,6 +114,141 @@ The pipeline includes built-in functions for performance tracking and diagnostic
 
 ---
 
+# **Demo file**
+
+---
+
+# Causal Multi-Omics Transformer (CMO-Transformer) - Demo & Validation Suite
+
+This repository serves as a **lightweight demo and validation environment** for the **Causal Multi-Omics Transformer (CMO-Transformer)** project. It includes synthetic multi-omics data generation, model architecture prototyping, baseline benchmarking against established single-cell and traditional ML architectures, interpretability tools, and clinical utility decision-curve analysis.
+
+---
+
+## 📌 Project Overview
+
+This demo repository allows researchers and developers to run, inspect, and benchmark the complete pipeline without requiring massive TCGA or GEO datasets. It demonstrates how multi-modal omics data (m6A regulators, lncRNAs, miRNAs, circRNAs, metabolic pathways, and immune checkpoints) interact through cross-attention and causal inference modules.
+
+### Key Demo Capabilities:
+
+* **Synthetic Data Engine:** Generates realistic, correlated multi-omics matrices ($N=500$ default) reflecting realistic non-small cell lung cancer (NSCLC) response distributions.
+* **Architectural Benchmarking:** Evaluates the **CMO-Transformer** against baseline model architectures:
+* *GeneformerLite* (Transformer)
+* *scBERTMini* (Transformer with `[CLS]` token)
+* *GNNOmics* (Graph Convolutional Network)
+* *Random Forest & Logistic Regression*
+
+
+* **Interpretability & Causal Discovery:** Extracts and visualizes cross-modal attention maps and learned inter-modality causal adjacency matrices.
+* **Decision Curve & Clinical Utility Analysis:** Evaluates net clinical benefit across decision thresholds.
+* **Cloud-Ready Configuration:** Built with optional AWS SageMaker and S3 integration support (`boto3` / `sagemaker`).
+
+---
+
+## 🏗️ Model & Pipeline Architecture
+
+```
+                                  [ MULTI-OMICS INPUTS ]
+  ┌──────────┬──────────┬──────────┬──────────┬─────────────┬──────────┐
+  │   m6A    │  lncRNA  │  miRNA   │ circRNA  │  Metabolic  │  Immune  │
+  └────┬─────┴────┬─────┴────┬─────┴────┬─────┴──────┬──────┴────┬─────┘
+       │          │          │          │            │           │
+       ▼          ▼          │          ▼            ▼           ▼
+  ┌────────────────────────────────────────────────────────────────────┐
+  │                   Modality-Specific Encoders                        │
+  └─────────────────────────────────┬──────────────────────────────────┘
+                                    │
+                                    ▼
+  ┌────────────────────────────────────────────────────────────────────┐
+  │               Multi-Layer Cross-Modal Attention                    │
+  └─────────────────────────────────┬──────────────────────────────────┘
+                                    │
+                                    ▼
+  ┌────────────────────────────────────────────────────────────────────┐
+  │                 Causal Inference Adjacency Module                  │
+  └─────────────────────────────────┬──────────────────────────────────┘
+                                    │
+                                    ▼
+  ┌────────────────────────────────────────────────────────────────────┐
+  │               Fused Representation & Classifier                    │
+  └─────────────────────────────────┬──────────────────────────────────┘
+                                    │
+                                    ▼
+                     [ Immunotherapy Response (0 / 1) ]
+
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Requirements & Dependencies
+
+The codebase requires Python **3.10+** and key PyTorch/Scikit-learn libraries:
+
+```bash
+pip install torch torchvision torchaudio \
+            pandas numpy scikit-learn \
+            matplotlib seaborn tqdm \
+            boto3 sagemaker shap
+
+```
+
+### 2. Execution
+
+To run the demo pipeline end-to-end:
+
+```bash
+python main.py
+
+```
+
+*(Or execute all cells in your Colab/Jupyter Notebook interface)*
+
+---
+
+## 📊 Evaluation & Comparative Results
+
+The demo suite runs automated cross-model evaluation on the synthetic test set:
+
+| Model Architecture | Accuracy | F1 Macro / Score | AUROC / ROC-AUC |
+| --- | --- | --- | --- |
+| **CMO-Transformer** | **0.7800** | **0.8736** (F1) | **0.5981** |
+| **GNN-Model** | 0.8000 | 0.4444 (F1 Macro) | 0.5769 |
+| **Random Forest** | 0.8000 | 0.8889 (F1) | 0.5397 |
+| **scBERT** | 0.2000 | 0.1667 (F1 Macro) | 0.5450 |
+| **Logistic Regression** | 0.7800 | 0.8721 (F1) | 0.5013 |
+| **Geneformer** | 0.7500 | 0.4286 (F1 Macro) | 0.4106 |
+
+---
+
+## 🖼️ Generated Outputs & Artifacts
+
+All outputs and diagnostic figures are automatically saved to `results/` and `models/`:
+
+* `eda_dashboard.png`: Feature distributions, heatmaps, and PCA projection.
+* `training_history.png`: Training vs. Validation loss and accuracy curves over epochs.
+* `evaluation_results.png`: ROC curve, Precision-Recall curve, Confusion Matrix, and Probability distributions.
+* `model_comparison.png`: Performance bar-chart comparing CMO-Transformer against all baselines.
+* `causal_relationships.png`: Learned inter-modal causal adjacency matrix.
+* `feature_importance.png`: Modality and gene-level importance rankings.
+* `clinical_utility.png`: Decision Curve Analysis (DCA) and net benefit chart.
+* `results_summary.json` & `complete_results.pkl`: Structured metric dumps.
+
+---
+
+## 📂 Codebase Structure
+
+```text
+├── data/                    # Generated synthetic input files
+├── models/                  # Saved model checkpoints (best_model.pth)
+├── results/                 # Evaluation graphics, JSON summaries, and pickles
+├── main.py / notebook       # Demo script & execution logic
+└── README.md                # Project documentation
+
+```
+
+---
+
 ## 👤 Author
 
 **Romina Arab**
