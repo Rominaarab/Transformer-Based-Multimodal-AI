@@ -35,6 +35,7 @@ jobs:
           DEMO_EPOCHS: ${{ inputs.epochs || 1 }}
         run: |
           mkdir output
+          cp Thesis_pieline_demo.ipynb output/input.ipynb
           docker run --rm --network none --shm-size=256m \
             --user "$(id -u):$(id -g)" --env HOME=/tmp --env DEMO_EPOCHS \
             --mount "type=bind,source=$PWD/output,target=/output" thesis-demo
