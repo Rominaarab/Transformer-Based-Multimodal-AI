@@ -39,6 +39,17 @@ Multi-omics integration is crucial for understanding complex cancer phenotypes a
 
 ## 🚀 Quick Start
 
+### Run the synthetic demo on GitHub
+
+1. Open **Actions → Docker demo → Run workflow**.
+2. Set **epochs** to **1** for a quick end-to-end check or **70** to allow the full demo training schedule. Early stopping may end training sooner.
+3. Open the run. The **Build image** step installs the Python environment, and **Run notebook** executes the notebook from a fresh kernel on a GitHub-hosted Linux CPU runner.
+4. Download **thesis-demo** from **Artifacts** on the run summary. It includes the executed notebook, plots, JSON metrics, and the best model checkpoint. Outputs are retained for seven days.
+
+The Docker workflow runs `Thesis_pieline_demo.ipynb` using synthetic data. Its model comparison includes the transformer, random forest, and logistic regression evaluated on the same held-out samples. Feature-importance example plots use fixed illustrative scores. The demo measures performance on generated labels.
+
+The separate `Thesis_Final_pipeline.ipynb` requires the circRNA workbook and GEO clinical TSV listed below. Its later evaluation cells currently create random labels and slice data by row or column position. A real-data workflow needs verified outcome labels and patient/sample-ID alignment before training and evaluation.
+
 ### 1. Run in Google Colab
 
 You can run the entire pipeline with GPU acceleration directly in Google Colab:
@@ -47,8 +58,8 @@ You can run the entire pipeline with GPU acceleration directly in Google Colab:
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/Rominaarab/Machine-learning.git
-cd Machine-learning
+git clone https://github.com/Rominaarab/Transformer-Based-Multimodal-AI.git
+cd Transformer-Based-Multimodal-AI
 
 ```
 
@@ -181,45 +192,11 @@ This demo repository allows researchers and developers to run, inspect, and benc
 
 ## 🚀 Quick Start
 
-### 1. Requirements & Dependencies
+Use **Actions → Docker demo** for a cloud run, or open `Thesis_pieline_demo.ipynb` in Jupyter or Colab and run the cells in order. The dependencies for the Docker run are in `requirements-demo.txt`, with CPU PyTorch installed by the Dockerfile.
 
-The codebase requires Python **3.10+** and key PyTorch/Scikit-learn libraries:
+## Evaluation
 
-```bash
-pip install torch torchvision torchaudio \
-            pandas numpy scikit-learn \
-            matplotlib seaborn tqdm \
-            boto3 sagemaker shap
-
-```
-
-### 2. Execution
-
-To run the demo pipeline end-to-end:
-
-```bash
-python main.py
-
-```
-
-*(Or execute all cells in your Colab/Jupyter Notebook interface)*
-
----
-
-## 📊 Evaluation & Comparative Results
-
-The demo suite runs automated cross-model evaluation on the synthetic test set:
-
-| Model Architecture | Accuracy | F1 Macro / Score | AUROC / ROC-AUC |
-| --- | --- | --- | --- |
-| **CMO-Transformer** | **0.7800** | **0.8736** (F1) | **0.5981** |
-| **GNN-Model** | 0.8000 | 0.4444 (F1 Macro) | 0.5769 |
-| **Random Forest** | 0.8000 | 0.8889 (F1) | 0.5397 |
-| **scBERT** | 0.2000 | 0.1667 (F1 Macro) | 0.5450 |
-| **Logistic Regression** | 0.7800 | 0.8721 (F1) | 0.5013 |
-| **Geneformer** | 0.7500 | 0.4286 (F1 Macro) | 0.4106 |
-
----
+The notebook compares the trained CMO-Transformer with Random Forest and Logistic Regression on the same synthetic test samples. GeneformerLite, scBERTMini, and GNNOmics are architecture prototypes in the notebook. The workflow reports metrics for the current run in `results_summary.json`.
 
 ## 🖼️ Generated Outputs & Artifacts
 
@@ -230,7 +207,7 @@ All outputs and diagnostic figures are automatically saved to `results/` and `mo
 * `evaluation_results.png`: ROC curve, Precision-Recall curve, Confusion Matrix, and Probability distributions.
 * `model_comparison.png`: Performance bar-chart comparing CMO-Transformer against all baselines.
 * `causal_relationships.png`: Learned inter-modal causal adjacency matrix.
-* `feature_importance.png`: Modality and gene-level importance rankings.
+* `feature_importance.png`: Illustrative modality and gene-level importance scores.
 * `clinical_utility.png`: Decision Curve Analysis (DCA) and net benefit chart.
 * `results_summary.json` & `complete_results.pkl`: Structured metric dumps.
 
@@ -242,7 +219,7 @@ All outputs and diagnostic figures are automatically saved to `results/` and `mo
 ├── data/                    # Generated synthetic input files
 ├── models/                  # Saved model checkpoints (best_model.pth)
 ├── results/                 # Evaluation graphics, JSON summaries, and pickles
-├── main.py / notebook       # Demo script & execution logic
+├── Thesis_pieline_demo.ipynb # Synthetic demo notebook
 └── README.md                # Project documentation
 
 ```

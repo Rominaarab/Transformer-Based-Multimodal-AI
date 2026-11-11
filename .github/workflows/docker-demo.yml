@@ -1,0 +1,52 @@
+name: Docker demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      epochs:
+        description: "Maximum training epochs (1 for a quick check, 70 for the original demo)"
+        default: 1
+        type: number
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate epoch count
+        env:
+          DEMO_EPOCHS: ${{ inputs.epochs }}
+        run: |
+          if [[ ! "$DEMO_EPOCHS" =~ ^([1-9]|[1-6][0-9]|70)$ ]]; then
+            echo "Choose an integer from 1 to 70."
+            exit 1
+          fi
+      - name: Build image
+        run: docker build -t thesis-demo .
+      - name: Run notebook
+        env:
+          DEMO_EPOCHS: ${{ inputs.epochs }}
+        run: |
+          mkdir output
+          cp Thesis_pieline_demo.ipynb output/input.ipynb
+          docker run --rm --network none --shm-size=256m \
+            --user "$(id -u):$(id -g)" --env HOME=/tmp --env DEMO_EPOCHS \
+            --mount "type=bind,source=$PWD/output,target=/output" thesis-demo
+          test -s output/executed.ipynb
+          test -s output/results/results_summary.json
+          test -s output/models/best_model.pth
+      - name: Save outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: thesis-demo
+          path: |
+            output/executed.ipynb
+            output/results/
+            output/models/
+          if-no-files-found: error
+          retention-days: 7
