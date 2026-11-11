@@ -1,8 +1,6 @@
 name: Docker demo
 
 on:
-  push:
-    branches: [codex/docker-demo]
   workflow_dispatch:
     inputs:
       epochs:
@@ -22,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate epoch count
         env:
-          DEMO_EPOCHS: ${{ inputs.epochs || 1 }}
+          DEMO_EPOCHS: ${{ inputs.epochs }}
         run: |
           if [[ ! "$DEMO_EPOCHS" =~ ^([1-9]|[1-6][0-9]|70)$ ]]; then
             echo "Choose an integer from 1 to 70."
@@ -32,7 +30,7 @@ jobs:
         run: docker build -t thesis-demo .
       - name: Run notebook
         env:
-          DEMO_EPOCHS: ${{ inputs.epochs || 1 }}
+          DEMO_EPOCHS: ${{ inputs.epochs }}
         run: |
           mkdir output
           cp Thesis_pieline_demo.ipynb output/input.ipynb

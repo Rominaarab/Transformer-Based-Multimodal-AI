@@ -39,6 +39,17 @@ Multi-omics integration is crucial for understanding complex cancer phenotypes a
 
 ## 🚀 Quick Start
 
+### Run the synthetic demo on GitHub
+
+1. Open **Actions → Docker demo → Run workflow**.
+2. Set **epochs** to **1** for a quick end-to-end check or **70** to allow the full demo training schedule. Early stopping may end training sooner.
+3. Open the run. The **Build image** step installs the Python environment, and **Run notebook** executes the notebook from a fresh kernel on a GitHub-hosted Linux CPU runner.
+4. Download **thesis-demo** from **Artifacts** on the run summary. It includes the executed notebook, plots, JSON metrics, and the best model checkpoint. Outputs are retained for seven days.
+
+The Docker workflow runs `Thesis_pieline_demo.ipynb` using synthetic data. Its model comparison includes the transformer, random forest, and logistic regression evaluated on the same held-out samples. Feature-importance example plots use fixed illustrative scores. The demo measures performance on generated labels.
+
+The separate `Thesis_Final_pipeline.ipynb` requires the circRNA workbook and GEO clinical TSV listed below. Its later evaluation cells currently create random labels and slice data by row or column position. A real-data workflow needs verified outcome labels and patient/sample-ID alignment before training and evaluation.
+
 ### 1. Run in Google Colab
 
 You can run the entire pipeline with GPU acceleration directly in Google Colab:
@@ -47,8 +58,8 @@ You can run the entire pipeline with GPU acceleration directly in Google Colab:
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/Rominaarab/Machine-learning.git
-cd Machine-learning
+git clone https://github.com/Rominaarab/Transformer-Based-Multimodal-AI.git
+cd Transformer-Based-Multimodal-AI
 
 ```
 
