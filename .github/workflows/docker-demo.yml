@@ -6,9 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       epochs:
-        description:
-  push:
-    branches: [codex/docker-demo] "Maximum training epochs (1 for a quick check, 70 for the original demo)"
+        description: "Maximum training epochs (1 for a quick check, 70 for the original demo)"
         default: 1
         type: number
         required: true
@@ -18,9 +16,7 @@ permissions:
 
 jobs:
   demo:
-    runs-on:
-  push:
-    branches: [codex/docker-demo] ubuntu-24.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -55,4 +51,3 @@ jobs:
             output/models/
           if-no-files-found: error
           retention-days: 7
-
