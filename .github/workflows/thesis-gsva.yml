@@ -1,5 +1,7 @@
 name: Thesis TCGA GSVA
 on:
+  push:
+    branches: [codex/thesis-validation]
   workflow_dispatch:
 
 permissions:
