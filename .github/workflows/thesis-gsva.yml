@@ -1,0 +1,33 @@
+name: Thesis TCGA GSVA
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gsva:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify the original TCGA Xena file
+        run: |
+          mkdir -p input output
+          curl --fail --location --retry 3 --output input/HiSeqV2.gz 'https://tcga-xena-hub.s3.us-east-1.amazonaws.com/download/TCGA.LUAD.sampleMap%2FHiSeqV2.gz'
+          sha256sum --check thesis_validation/tcga.sha256
+      - name: Build GSVA image
+        run: docker build --file thesis_validation/Dockerfile --tag thesis-gsva thesis_validation
+      - name: Score four thesis gene sets
+        run: |
+          docker run --rm --network none --user "$(id -u):$(id -g)" --env HOME=/tmp \
+            --mount "type=bind,source=$PWD/input,target=/input,readonly" \
+            --mount "type=bind,source=$PWD/output,target=/output" \
+            thesis-gsva /input/HiSeqV2.gz /output
+          test -s output/gsva_scores.tsv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thesis-tcga-gsva
+          path: output/
+          if-no-files-found: error
+          retention-days: 7
